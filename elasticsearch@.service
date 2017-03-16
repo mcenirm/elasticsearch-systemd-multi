@@ -1,18 +1,18 @@
 [Unit]
-Description=Elasticsearch
+Description=Elasticsearch for %I
 Documentation=http://www.elastic.co
 Wants=network-online.target
 After=network-online.target
 
 [Service]
-Environment=ES_HOME=/usr/share/elasticsearch
-Environment=CONF_DIR=/etc/elasticsearch
-Environment=DATA_DIR=/var/lib/elasticsearch
-Environment=LOG_DIR=/var/log/elasticsearch
-Environment=PID_DIR=/var/run/elasticsearch
-EnvironmentFile=-/etc/sysconfig/elasticsearch
+Environment=ES_HOME=/usr/share/elasticsearch@%I
+Environment=CONF_DIR=/etc/elasticsearch@%I
+Environment=DATA_DIR=/var/lib/elasticsearch@%I
+Environment=LOG_DIR=/var/log/elasticsearch@%I
+Environment=PID_DIR=/var/run/elasticsearch@%I
+EnvironmentFile=-/etc/sysconfig/elasticsearch@%I
 
-WorkingDirectory=/usr/share/elasticsearch
+WorkingDirectory=/usr/share/elasticsearch@%I
 
 User=elasticsearch
 Group=elasticsearch
@@ -20,6 +20,9 @@ Group=elasticsearch
 ExecStartPre=/usr/share/elasticsearch/bin/elasticsearch-systemd-pre-exec
 
 ExecStart=/usr/share/elasticsearch/bin/elasticsearch \
+                                                -Des.cluster.name=elasticsearch@%I \
+                                                -Des.node.name=elasticsearch@%I-%H \
+                                                -Des.network.host=%H \
                                                 -Des.pidfile=${PID_DIR}/elasticsearch.pid \
                                                 -Des.default.path.home=${ES_HOME} \
                                                 -Des.default.path.logs=${LOG_DIR} \
